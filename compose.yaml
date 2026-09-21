@@ -1,0 +1,18 @@
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cloudcost}
+      POSTGRES_USER: ${POSTGRES_USER:-cloudcost}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cloudcost-local}
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes: [postgres-data:/var/lib/postgresql/data]
+
+volumes:
+  postgres-data:

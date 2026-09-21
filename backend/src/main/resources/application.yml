@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: cloudcost-api
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/cloudcost}
+    username: ${DB_USERNAME:cloudcost}
+    password: ${DB_PASSWORD:cloudcost-local}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}

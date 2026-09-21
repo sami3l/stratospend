@@ -1,0 +1,13 @@
+.idea/
+.vscode/
+.env
+*.log
+target/
+node_modules/
+.next/
+coverage/
+*.tfstate
+*.tfstate.*
+.terraform/
+dist/
+*.zip
