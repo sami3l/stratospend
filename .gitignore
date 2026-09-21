@@ -1,6 +1,5 @@
 .idea/
 .vscode/
-.env
 *.log
 target/
 node_modules/
@@ -11,3 +10,9 @@ coverage/
 .terraform/
 dist/
 *.zip
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
