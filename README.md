@@ -8,7 +8,7 @@ The project follows a product-first approach: application features are implement
 
 > **Project status:** Milestone 1 is complete. StratoSpend currently manages cloud account metadata; it does not connect to real cloud providers or collect credentials.
 
-## Current milestone â€” Foundation and cloud accounts
+## Current milestone : Foundation and cloud accounts
 
 - Spring Boot REST API and Next.js web application foundations
 - PostgreSQL schema versioning with Flyway
