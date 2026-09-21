@@ -15,39 +15,3 @@ CloudCost Monitor is the application at the center of the `fullstack-devsecops-p
 
 Real cloud credentials are deliberately out of scope. Accounts are metadata records only.
 
-## Project structure
-
-```text
-backend/    Spring Boot REST API
-frontend/   Next.js application
-docs/       Domain decisions and milestone roadmap
-```
-
-The backend is organized by technical layer: `model`, `repository`, `service`, `controller`, `dto`, `exception`, and `common`.
-
-## Run locally
-
-Prerequisites: Java 17, Maven, Node.js 24, npm and PostgreSQL (or Docker for the database only).
-
-```bash
-cp .env.example .env
-docker compose up -d database
-
-cd backend
-mvn spring-boot:run
-
-cd frontend
-npm install
-npm run dev
-```
-
-Open <http://localhost:3000>. The API is available at <http://localhost:8080/api/v1/cloud-accounts>.
-
-## Tests
-
-```bash
-cd backend && mvn verify
-cd frontend && npm run lint && npm test && npm run build
-```
-
-See [docs/ROADMAP.md](docs/ROADMAP.md) for the feature sequence.
