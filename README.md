@@ -1,7 +1,5 @@
 # StratoSpend
 
-> See every cloud resource. Control every cloud cost.
-
 StratoSpend is a multi-cloud resource inventory and cost management application built with Spring Boot, Next.js and PostgreSQL.
 
 The project follows a product-first approach: application features are implemented one vertical milestone at a time before the repository evolves into a complete DevSecOps platform with automated delivery, security scanning, Kubernetes, GitOps and observability.
@@ -185,10 +183,6 @@ npm run build
 ## Security note
 
 StratoSpend stores account identifiers and descriptive metadata only. Do not add cloud access keys, secret keys, tokens or other credentials to account records, environment files or Git history.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ## License
 

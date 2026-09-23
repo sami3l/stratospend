@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CloudCost Monitor",
+  title: "StratoSpend",
   description: "Cloud resource and cost management platform",
 };
 
