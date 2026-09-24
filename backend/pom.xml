@@ -9,9 +9,9 @@
     <relativePath/>
   </parent>
   <groupId>dev.sami</groupId>
-  <artifactId>cloudcost-api</artifactId>
+  <artifactId>stratospend-api</artifactId>
   <version>0.1.0-SNAPSHOT</version>
-  <name>cloudcost-api</name>
+  <name>stratospend-api</name>
   <description>Cloud resource and cost management API</description>
   <properties>
     <java.version>17</java.version>

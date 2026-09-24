@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <main>
       <aside className="sidebar">
-        <div className="brand"><span>☁</span><div>CloudCost<small>MONITOR</small></div></div>
+        <div className="brand"><span>☁</span><div>StratoSpend</div></div>
         <nav aria-label="Main navigation">
           <a className="active" href="#accounts">Cloud accounts</a>
           <span>Resources <em>Next</em></span>
