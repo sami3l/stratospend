@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = CloudResourceController.class,
-        properties = "app.cors.allowed-origin=https://ui.stratospend.test")
+        properties = "app.cors.allowed-origins=https://ui.stratospend.test")
 class CloudResourceControllerTest {
     private static final String BASE = "/api/v1/cloud-resources";
     private static final String EXTERNAL_ID = "CaseSensitive/ID:AbC";

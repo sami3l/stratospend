@@ -9,7 +9,6 @@ import dev.sami.platform.service.CloudResourceService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,6 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/cloud-resources")
-@CrossOrigin(origins = "${app.cors.allowed-origin:http://localhost:3000}")
 public class CloudResourceController {
     private final CloudResourceService service;
 

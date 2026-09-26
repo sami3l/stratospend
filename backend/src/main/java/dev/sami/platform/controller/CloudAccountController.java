@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/cloud-accounts")
-@CrossOrigin(origins = "${app.cors.allowed-origin:http://localhost:3000}")
 public class CloudAccountController {
     private final CloudAccountService service;
 
