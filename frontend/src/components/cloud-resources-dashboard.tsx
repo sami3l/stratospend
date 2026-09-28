@@ -1,15 +1,14 @@
 "use client";
 
+import { useRef, useState } from "react";
+import Link from "next/link";
 import { useCloudResourceInventory } from "@/hooks/use-cloud-resource-inventory";
+import { CreateCloudResourceDialog } from "./create-cloud-resource-dialog";
+import { resourceCategories as categories, resourceStatuses as statuses } from "@/lib/cloud-resource-form";
 import type { CloudProvider } from "@/lib/cloud-accounts";
 import type { CloudResourceQuery, ResourceCategory, ResourceStatus } from "@/lib/cloud-resources";
 
 const providers: Record<CloudProvider, string> = { AWS: "AWS", AZURE: "Azure", GCP: "Google Cloud" };
-const categories: Record<ResourceCategory, string> = {
-  COMPUTE: "Compute", STORAGE: "Storage", DATABASE: "Database", NETWORK: "Network",
-  CONTAINER: "Container", SERVERLESS: "Serverless", OTHER: "Other",
-};
-const statuses: Record<ResourceStatus, string> = { ACTIVE: "Active", INACTIVE: "Inactive", UNKNOWN: "Unknown" };
 const sorts = [
   ["createdAt,desc", "Newest created"], ["createdAt,asc", "Oldest created"],
   ["updatedAt,desc", "Recently updated"], ["updatedAt,asc", "Least recently updated"],
@@ -29,12 +28,36 @@ function timestamp(value: string) {
 export function CloudResourcesDashboard() {
   const { query, resources, accounts, changeFilters, resetFilters, changePage, hasFilters } = useCloudResourceInventory();
   const page = resources.status === "success" ? resources.data : undefined;
+  const [showCreate, setShowCreate] = useState(false);
+  const [success, setSuccess] = useState("");
+  const addButton = useRef<HTMLButtonElement>(null);
+  const canCreate = accounts.status === "success" && accounts.data.length > 0;
+
+  function closeCreate() {
+    setShowCreate(false);
+    addButton.current?.focus();
+  }
 
   return <>
     <header className="page-heading">
       <div><p className="eyebrow">CLOUD INVENTORY</p><h1>Cloud resources</h1></div>
       <p>Explore resources across your cloud accounts. Filter by account, provider, category, region or status.</p>
     </header>
+    <div className="resource-create-action">
+      <button ref={addButton} className="inventory-button primary-action" disabled={!canCreate}
+        aria-describedby={!canCreate ? "resource-create-help" : undefined}
+        onClick={() => { setSuccess(""); setShowCreate(true); }}>Add resource</button>
+      {!canCreate && <p id="resource-create-help">{accounts.status === "loading" ? "Loading cloud accounts before adding a resource."
+        : accounts.status === "error" ? "Retry cloud accounts below before adding a resource."
+          : <>Add a <Link href="/">cloud account</Link> first to create a resource.</>}</p>}
+    </div>
+    {success && <p className="inventory-success" role="status">{success}</p>}
+    {showCreate && accounts.status === "success" && <CreateCloudResourceDialog accounts={accounts.data}
+      onClose={closeCreate} onCreated={(resource) => {
+        closeCreate();
+        setSuccess(`Resource “${resource.name}” added. Current filters still apply.`);
+        resources.retry();
+      }} />}
     <p className="resource-total" aria-live="polite">
       {page ? <><strong>{page.totalElements}</strong> resources matching current filters</>
         : resources.status === "error" ? "Resource total unavailable" : "Loading resource total…"}
