@@ -37,6 +37,35 @@
 .resource-pagination span{color:#aab8c9;font-size:13px}
 .resource-field-errors{list-style:none;padding:0;line-height:1.7;overflow-wrap:anywhere}
 
+/* Resource creation */
+.resource-create-action{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.resource-create-action p{font-size:13px;color:var(--muted)}
+.resource-create-action a{color:var(--blue)}
+.primary-action{background:var(--blue);border-color:var(--blue);color:#04101b;font-weight:700}
+.primary-action:hover:not(:disabled){background:#83c2ff}
+.inventory-success{border:1px solid #285a48;background:#102e28;color:#73efb8;padding:16px;border-radius:9px;overflow-wrap:anywhere}
+.resource-dialog{width:min(640px,calc(100% - 32px));max-height:calc(100dvh - 32px);margin:auto;overflow-y:auto;background:var(--panel);color:var(--text);border:1px solid #36506d;border-radius:14px;padding:28px;box-shadow:0 24px 80px #0008}
+.resource-dialog::backdrop{background:#020813c9}
+.resource-dialog h2{margin:0;font-size:25px}
+.dialog-description{color:#aab8c9;font-size:14px;line-height:1.5;margin:12px 0 24px}
+.resource-create-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;border:0;padding:0;margin:0;min-width:0}
+.create-field{min-width:0}
+.create-field-wide{grid-column:1/-1}
+.create-field label{display:block;color:#c4d5e8;font-size:13px;margin-bottom:8px}
+.create-field input,.create-field select{width:100%;min-width:0;min-height:44px;padding:11px;border-radius:7px;border:1px solid #36506d;background:#091421;color:var(--text)}
+.create-field [aria-invalid="true"]{border-color:#ff8d8d}
+.create-field .field-error{color:#ffb4b4;font-size:13px;line-height:1.4;margin:7px 0 0;overflow-wrap:anywhere}
+.resource-create-fields:disabled{opacity:.65}
+.dialog-error{background:#301c28;border:1px solid #70404c;border-radius:8px;padding:14px;color:#ffb4b4;margin-bottom:20px;overflow-wrap:anywhere}
+.dialog-error p{margin:4px 0}
+.dialog-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:24px}
+@media(max-width:540px){
+  .resource-dialog{padding:20px}
+  .resource-create-fields{grid-template-columns:minmax(0,1fr)}
+  .resource-create-action{align-items:flex-start;flex-direction:column;gap:4px}
+  .dialog-actions .inventory-button{flex:1}
+}
+
 @media(max-width:900px){
   .app-shell{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
   .sidebar{display:flex;padding:18px;border-right:0;border-bottom:1px solid var(--line)}
