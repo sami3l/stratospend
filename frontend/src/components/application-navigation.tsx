@@ -9,7 +9,8 @@ export function ApplicationNavigation() {
     <div className="brand"><span aria-hidden="true">☁</span><div>StratoSpend</div></div>
     <nav aria-label="Main navigation">
       {[{ href: "/", label: "Cloud accounts" }, { href: "/resources", label: "Resources" }].map(({ href, label }) => {
-        const active = pathname === href;
+        // Nested pages such as /resources/42 keep their section highlighted.
+        const active = pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
         return <Link key={href} href={href} className={active ? "active" : undefined}
           aria-current={active ? "page" : undefined}>{label}</Link>;
       })}

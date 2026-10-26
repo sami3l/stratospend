@@ -41,4 +41,20 @@ describe("Shared application navigation", () => {
     expect(screen.getByRole("heading", { name: "Cloud resources", level: 1 })).toBeInTheDocument();
     expect(await screen.findByText("No cloud resources yet")).toBeInTheDocument();
   });
+
+  it.each(["/resources/42", "/resources/42/edit"])("keeps resources highlighted on nested route %s", (pathname) => {
+    vi.mocked(usePathname).mockReturnValue(pathname);
+    render(<ApplicationNavigation />);
+    const navigation = within(screen.getByRole("navigation", { name: "Main navigation" }));
+    expect(navigation.getByRole("link", { name: "Resources" })).toHaveAttribute("aria-current", "page");
+    expect(navigation.getByRole("link", { name: "Cloud accounts" })).not.toHaveAttribute("aria-current");
+  });
+
+  it("does not highlight a section for a path that only shares its prefix", () => {
+    vi.mocked(usePathname).mockReturnValue("/resources-archive");
+    render(<ApplicationNavigation />);
+    const navigation = within(screen.getByRole("navigation", { name: "Main navigation" }));
+    expect(navigation.getByRole("link", { name: "Resources" })).not.toHaveAttribute("aria-current");
+    expect(navigation.getByRole("link", { name: "Cloud accounts" })).not.toHaveAttribute("aria-current");
+  });
 });
