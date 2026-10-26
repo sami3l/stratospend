@@ -10,10 +10,10 @@
 
 ## Milestone 2 — Cloud resource inventory
 
-- [ ] Resource entity and account relationship
-- [ ] Resource CRUD, filtering, pagination and sorting
-- [ ] Resource inventory table and details view
-- [ ] Seed/demo data importer
+- [x] Resource entity and account relationship
+- [x] Resource CRUD, filtering, pagination and sorting (resources are marked inactive instead of deleted)
+- [x] Resource inventory table and details view, with resource editing
+- [x] Seed/demo data importer (`demo` Spring profile)
 
 ## Milestone 3 — Cost tracking
 
