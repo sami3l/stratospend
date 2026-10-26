@@ -90,3 +90,4 @@ frontend/src/
 | Malformed resource IDs in the URL show "not found" without calling the API. | The backend would reject them anyway, and the page avoids a pointless request. |
 | Concurrent edits are not detected yet: the last save wins. | Detecting conflicts needs a version column and a new migration. It will be added as its own change. |
 | Inventory filters live in component state. | Going back to the inventory resets them. Keeping filters in the URL is a planned improvement. |
+| Cost CSV imports are limited to 10,000 rows. | New cost records get database-generated IDs, so Hibernate inserts them one at a time. Measured on Windows with Docker Desktop: 10,000 new rows took about 13 seconds and 50,000 took 74. Batched inserts, which need pooled sequence IDs and a new migration, are a planned improvement before the limit is raised. |
