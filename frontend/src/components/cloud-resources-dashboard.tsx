@@ -4,11 +4,12 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { useCloudResourceInventory } from "@/hooks/use-cloud-resource-inventory";
 import { CreateCloudResourceDialog } from "./create-cloud-resource-dialog";
-import { resourceCategories as categories, resourceStatuses as statuses } from "@/lib/cloud-resource-form";
+import {
+  formatTimestamp, providerLabels as providers, resourceCategories as categories, resourceStatuses as statuses,
+} from "@/lib/cloud-resource-form";
 import type { CloudProvider } from "@/lib/cloud-accounts";
 import type { CloudResourceQuery, ResourceCategory, ResourceStatus } from "@/lib/cloud-resources";
 
-const providers: Record<CloudProvider, string> = { AWS: "AWS", AZURE: "Azure", GCP: "Google Cloud" };
 const sorts = [
   ["createdAt,desc", "Newest created"], ["createdAt,asc", "Oldest created"],
   ["updatedAt,desc", "Recently updated"], ["updatedAt,asc", "Least recently updated"],
@@ -19,11 +20,6 @@ const sorts = [
   ["status,asc", "Status: A to Z"], ["status,desc", "Status: Z to A"],
   ["id,asc", "ID: ascending"], ["id,desc", "ID: descending"],
 ] satisfies [NonNullable<CloudResourceQuery["sort"]>, string][];
-
-function timestamp(value: string) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "Unavailable" : date.toISOString().replace("T", " ").replace(/\.\d+Z$/, " UTC");
-}
 
 export function CloudResourcesDashboard() {
   const { query, resources, accounts, changeFilters, resetFilters, changePage, hasFilters } = useCloudResourceInventory();
@@ -130,13 +126,13 @@ export function CloudResourcesDashboard() {
           <thead><tr>{["Resource", "Account", "Provider", "Category", "Provider service", "Region", "Status", "Updated (UTC)"].map((heading) =>
             <th scope="col" key={heading}>{heading}</th>)}</tr></thead>
           <tbody>{page.content.map((resource) => <tr key={resource.id}>
-            <th scope="row"><strong>{resource.name}</strong><code>{resource.externalResourceId}</code></th>
+            <th scope="row"><strong><Link href={`/resources/${resource.id}`}>{resource.name}</Link></strong><code>{resource.externalResourceId}</code></th>
             <td>{resource.cloudAccountName}</td>
             <td><span className={`provider ${resource.provider.toLowerCase()}`}>{providers[resource.provider]}</span></td>
             <td><span className="resource-badge">{categories[resource.category]}</span></td>
             <td>{resource.providerService}</td><td>{resource.region}</td>
             <td><span className={`resource-badge resource-status-${resource.status.toLowerCase()}`}>{statuses[resource.status]}</span></td>
-            <td><time dateTime={resource.updatedAt}>{timestamp(resource.updatedAt)}</time></td>
+            <td><time dateTime={resource.updatedAt}>{formatTimestamp(resource.updatedAt)}</time></td>
           </tr>)}</tbody>
         </table>
       </div>)}

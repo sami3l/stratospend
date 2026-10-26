@@ -86,6 +86,8 @@ describe("Cloud resource inventory", () => {
     const table = within(screen.getByRole("table"));
     expect(table.getAllByRole("columnheader")).toHaveLength(8);
     expect(table.getByRole("rowheader", { name: /Web server/ })).toHaveTextContent(resource.externalResourceId);
+    expect(table.getByRole("link", { name: "Web server" })).toHaveAttribute("href", "/resources/42");
+    expect(table.getByRole("link", { name: "Blob storage" })).toHaveAttribute("href", "/resources/43");
     expect(table.getAllByText("Production AWS")).toHaveLength(3);
     for (const label of ["AWS", "Azure", "Google Cloud", "Compute", "Active", "Inactive", "Unknown"]) {
       expect(table.getByText(label)).toBeInTheDocument();

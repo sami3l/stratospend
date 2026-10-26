@@ -1,5 +1,7 @@
+import type { CloudProvider } from "./cloud-accounts";
 import type { CloudResourceCreateInput, ResourceCategory, ResourceStatus } from "./cloud-resources";
 
+export const providerLabels: Record<CloudProvider, string> = { AWS: "AWS", AZURE: "Azure", GCP: "Google Cloud" };
 export const resourceCategories: Record<ResourceCategory, string> = {
   COMPUTE: "Compute", STORAGE: "Storage", DATABASE: "Database", NETWORK: "Network",
   CONTAINER: "Container", SERVERLESS: "Serverless", OTHER: "Other",
@@ -7,6 +9,11 @@ export const resourceCategories: Record<ResourceCategory, string> = {
 export const resourceStatuses: Record<ResourceStatus, string> = {
   ACTIVE: "Active", INACTIVE: "Inactive", UNKNOWN: "Unknown",
 };
+
+export function formatTimestamp(value: string) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "Unavailable" : date.toISOString().replace("T", " ").replace(/\.\d+Z$/, " UTC");
+}
 
 export const resourceStringFields = {
   externalResourceId: { label: "External resource ID", maxLength: 512 },
