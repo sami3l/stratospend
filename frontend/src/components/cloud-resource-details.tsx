@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { useLoad } from "@/hooks/use-load";
-import { getCloudResource } from "@/lib/cloud-resources";
+import { getCloudResource, type CloudResource } from "@/lib/cloud-resources";
 import {
   formatTimestamp, providerLabels as providers, resourceCategories as categories, resourceStatuses as statuses,
 } from "@/lib/cloud-resource-form";
+import { EditCloudResourceDialog } from "./edit-cloud-resource-dialog";
 
 function parseResourceId(value: string) {
   const id = Number(value);
@@ -34,13 +35,18 @@ function NotFound() {
 
 export function CloudResourceDetails({ id }: { id: string }) {
   const resourceId = parseResourceId(id);
-  // An invalid ID never mounts the loader, so it sends no request.
-  return resourceId === null ? <NotFound /> : <ResourceDetailsLoader id={resourceId} />;
+  // An invalid ID never mounts the loader, so it sends no request. The key resets saved edits per resource.
+  return resourceId === null ? <NotFound /> : <ResourceDetailsLoader key={resourceId} id={resourceId} />;
 }
 
 function ResourceDetailsLoader({ id }: { id: number }) {
   const loadResource = useCallback(() => getCloudResource(id), [id]);
   const resource = useLoad(loadResource, "Unable to load cloud resource");
+  // The update response is the authoritative resource, so it replaces the loaded one without a refetch.
+  const [saved, setSaved] = useState<CloudResource>();
+  const [editing, setEditing] = useState(false);
+  const [success, setSuccess] = useState("");
+  const editButton = useRef<HTMLButtonElement>(null);
 
   if (resource.status === "error" && resource.httpStatus === 404) return <NotFound />;
   if (resource.status !== "success") {
@@ -54,9 +60,29 @@ function ResourceDetailsLoader({ id }: { id: number }) {
     </>;
   }
 
-  const { data } = resource;
+  const data = saved ?? resource.data;
+
+  function closeEdit() {
+    setEditing(false);
+    editButton.current?.focus();
+  }
+
   return <>
     <Heading title={data.name} />
+    <div className="resource-details-actions">
+      <button ref={editButton} className="inventory-button primary-action"
+        onClick={() => { setSuccess(""); setEditing(true); }}>Edit resource</button>
+    </div>
+    {success && <p className="inventory-success" role="status">{success}</p>}
+    {editing && <EditCloudResourceDialog resource={data} onClose={closeEdit} onSaved={(updated) => {
+      closeEdit();
+      if (updated === data) {
+        setSuccess("No changes to save.");
+      } else {
+        setSaved(updated);
+        setSuccess(`Resource “${updated.name}” updated.`);
+      }
+    }} />}
     <dl className="resource-details">
       <div className="resource-detail-wide"><dt>External resource ID</dt><dd><code>{data.externalResourceId}</code></dd></div>
       <div><dt>Cloud account</dt><dd>{data.cloudAccountName}</dd></div>

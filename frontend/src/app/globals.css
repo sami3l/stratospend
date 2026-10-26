@@ -69,6 +69,11 @@
 .resource-details dd{margin:0;overflow-wrap:anywhere;line-height:1.5}
 .resource-details code{color:#aec4da;font-size:13px}
 .resource-detail-wide{grid-column:1/-1}
+.resource-details-actions{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.resource-fixed-fields{display:grid;gap:12px;margin:0;padding:14px;border:1px solid var(--line);border-radius:8px;background:#091421}
+.resource-fixed-fields dt{color:#aab8c9;font-size:12px;margin-bottom:4px}
+.resource-fixed-fields dd{margin:0;overflow-wrap:anywhere}
+.resource-fixed-fields code{color:#aec4da;font-size:12px}
 @media(max-width:540px){
   .resource-details{grid-template-columns:minmax(0,1fr)}
   .resource-dialog{padding:20px}
