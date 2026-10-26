@@ -112,9 +112,9 @@ class WebCorsConfigurationTest {
 
     @Test
     void defaultsToLocalFrontendAndOnlyMapsApiPaths() {
-        new ApplicationContextRunner().withUserConfiguration(CorsConfiguration.class).run(context -> {
+        new ApplicationContextRunner().withUserConfiguration(WebCorsConfiguration.class).run(context -> {
             var registry = new InspectableRegistry();
-            context.getBean(CorsConfiguration.class).addCorsMappings(registry);
+            context.getBean(WebCorsConfiguration.class).addCorsMappings(registry);
             assertThat(registry.mappings()).containsOnlyKeys("/api/**");
             var policy = registry.mappings().get("/api/**");
             assertThat(policy.getAllowedOrigins()).containsExactly("http://localhost:3000");
@@ -126,7 +126,7 @@ class WebCorsConfigurationTest {
     @ParameterizedTest
     @ValueSource(strings = {"*", "https://*.example.com", "http://localhost:3000,*", " , "})
     void rejectsWildcardOrEmptyOriginConfiguration(String origins) {
-        assertThatThrownBy(() -> new CorsConfiguration(origins)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new WebCorsConfiguration(origins)).isInstanceOf(IllegalArgumentException.class);
     }
 
     private static class InspectableRegistry extends CorsRegistry {
