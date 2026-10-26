@@ -1,18 +1,23 @@
 package dev.sami.platform.common;
 
+import dev.sami.platform.dto.CostImportRowError;
 import dev.sami.platform.exception.CloudAccountNotFoundException;
 import dev.sami.platform.exception.CloudResourceNotFoundException;
+import dev.sami.platform.exception.ConcurrentCostImportException;
 import dev.sami.platform.exception.DuplicateCloudAccountException;
 import dev.sami.platform.exception.DuplicateCloudResourceException;
+import dev.sami.platform.exception.InvalidCostFileException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ElementKind;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.util.unit.DataSize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.method.MethodValidationException;
@@ -23,20 +28,52 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
-    @ExceptionHandler({DuplicateCloudAccountException.class, DuplicateCloudResourceException.class})
+    private final DataSize maxFileSize;
+
+    // Spring Boot's own default when spring.servlet.multipart.max-file-size is not set.
+    public ApiExceptionHandler(@Value("${spring.servlet.multipart.max-file-size:1MB}") DataSize maxFileSize) {
+        this.maxFileSize = maxFileSize;
+    }
+    @ExceptionHandler({DuplicateCloudAccountException.class, DuplicateCloudResourceException.class,
+            ConcurrentCostImportException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     Problem conflict(RuntimeException exception) {
         return new Problem(Instant.now(), HttpStatus.CONFLICT.value(), exception.getMessage(), Map.of());
+    }
+
+    // Row errors are a list rather than the sorted errors map, which would put row 10 before row 2.
+    @ExceptionHandler(InvalidCostFileException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    CostImportProblem invalidCostFile(InvalidCostFileException exception) {
+        return new CostImportProblem(Instant.now(), HttpStatus.BAD_REQUEST.value(), exception.getMessage(), Map.of(),
+                exception.getErrors(), exception.getTotalErrors());
+    }
+
+    // Tomcat reports the limit as unknown (-1), so the message uses the configured limit instead.
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    Problem uploadTooLarge(MaxUploadSizeExceededException exception) {
+        return new Problem(Instant.now(), HttpStatus.PAYLOAD_TOO_LARGE.value(),
+                "File is too large; the maximum is " + maxFileSize.toMegabytes() + " MB", Map.of());
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    Problem missingPart(MissingServletRequestPartException exception) {
+        return badRequest("Validation failed", Map.of(exception.getRequestPartName(), "is required"));
     }
 
     @ExceptionHandler({CloudAccountNotFoundException.class, CloudResourceNotFoundException.class})
@@ -203,6 +240,15 @@ public class ApiExceptionHandler {
     record Problem(Instant timestamp, int status, String message, Map<String, String> errors) {
         Problem {
             errors = Collections.unmodifiableMap(new TreeMap<>(errors));
+        }
+    }
+
+    /** The shared Problem fields plus ordered row errors, so generic clients can still read the response. */
+    record CostImportProblem(Instant timestamp, int status, String message, Map<String, String> errors,
+                             List<CostImportRowError> rowErrors, int totalErrors) {
+        CostImportProblem {
+            errors = Map.copyOf(errors);
+            rowErrors = List.copyOf(rowErrors);
         }
     }
 }

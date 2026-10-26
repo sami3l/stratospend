@@ -4,9 +4,15 @@ import dev.sami.platform.model.CostRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface CostRecordRepository extends JpaRepository<CostRecord, Long> {
+
+    /** Loads the records an import may update in one query instead of one lookup per row. */
+    List<CostRecord> findByCloudAccountIdInAndUsageDateBetween(Collection<Long> cloudAccountIds,
+                                                               LocalDate from, LocalDate to);
 
     Optional<CostRecord> findByCloudAccountIdAndCloudResourceIdAndProviderServiceAndUsageDate(
             Long cloudAccountId, Long cloudResourceId, String providerService, LocalDate usageDate);

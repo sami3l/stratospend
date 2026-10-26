@@ -1,5 +1,6 @@
 package dev.sami.platform.service;
 
+import dev.sami.platform.common.UniqueConstraintViolations;
 import dev.sami.platform.dto.CloudResourceQuery;
 import dev.sami.platform.dto.CloudResourceRequest;
 import dev.sami.platform.dto.CloudResourceResponse;
@@ -19,14 +20,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Locale;
-import java.util.regex.Pattern;
-
 @Service
 @Transactional(readOnly = true)
 public class CloudResourceService {
     private static final String UNIQUE_CONSTRAINT = "uk_cloud_resource_account_external_id";
-    private static final Pattern H2_UNIQUE_INDEX = Pattern.compile(UNIQUE_CONSTRAINT + "_index_[0-9a-f]+");
 
     private final CloudResourceRepository repository;
     private final CloudAccountRepository accountRepository;
@@ -109,30 +106,11 @@ public class CloudResourceService {
         try {
             return CloudResourceResponse.from(repository.saveAndFlush(resource));
         } catch (DataIntegrityViolationException failure) {
-            if (isDuplicateResource(failure)) {
+            if (UniqueConstraintViolations.isViolationOf(failure, UNIQUE_CONSTRAINT)) {
                 throw new DuplicateCloudResourceException(resource.getCloudAccount().getId(),
                         resource.getExternalResourceId(), failure);
             }
             throw failure;
         }
-    }
-
-    private boolean isDuplicateResource(DataIntegrityViolationException failure) {
-        for (Throwable cause = failure; cause != null; cause = cause.getCause()) {
-            if (cause instanceof org.hibernate.exception.ConstraintViolationException violation
-                    && "23505".equals(violation.getSQLState()) && violation.getConstraintName() != null) {
-                // Normalize database identifier spelling only, never externalResourceId or exception message text.
-                String name = violation.getConstraintName().replace("\"", "").trim().toLowerCase(Locale.ROOT);
-                name = name.substring(name.lastIndexOf('.') + 1);
-                if (UNIQUE_CONSTRAINT.equals(name)) {
-                    return true;
-                }
-                // H2 reports the generated backing index; PostgreSQL reports the declared constraint itself.
-                if (violation.getErrorCode() == 23505 && H2_UNIQUE_INDEX.matcher(name).matches()) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
