@@ -1,0 +1,55 @@
+{
+  "accounts": [
+    {
+      "name": "Demo AWS production",
+      "provider": "AWS",
+      "externalAccountId": "111122223333",
+      "environment": "PRODUCTION",
+      "region": "eu-west-3",
+      "resources": [
+        { "externalResourceId": "arn:aws:ec2:eu-west-3:111122223333:instance/i-0demo0000000web1", "name": "Demo web server 1", "category": "COMPUTE", "providerService": "EC2", "region": "eu-west-3", "status": "ACTIVE" },
+        { "externalResourceId": "arn:aws:ec2:eu-west-3:111122223333:instance/i-0demo0000000web2", "name": "Demo web server 2", "category": "COMPUTE", "providerService": "EC2", "region": "eu-west-3", "status": "ACTIVE" },
+        { "externalResourceId": "arn:aws:ec2:eu-west-1:111122223333:instance/i-0demo00000batch1", "name": "Demo nightly batch worker", "category": "COMPUTE", "providerService": "EC2", "region": "eu-west-1", "status": "INACTIVE" },
+        { "externalResourceId": "arn:aws:s3:::stratospend-demo-assets", "name": "Demo static assets bucket", "category": "STORAGE", "providerService": "S3", "region": "global", "status": "ACTIVE" },
+        { "externalResourceId": "arn:aws:s3:::stratospend-demo-backups", "name": "Demo backups bucket", "category": "STORAGE", "providerService": "S3", "region": "global", "status": "ACTIVE" },
+        { "externalResourceId": "arn:aws:rds:eu-west-3:111122223333:db:demo-orders", "name": "Demo orders database", "category": "DATABASE", "providerService": "RDS PostgreSQL", "region": "eu-west-3", "status": "ACTIVE" },
+        { "externalResourceId": "arn:aws:dynamodb:eu-west-3:111122223333:table/demo-sessions", "name": "Demo sessions table", "category": "DATABASE", "providerService": "DynamoDB", "region": "eu-west-3", "status": "ACTIVE" },
+        { "externalResourceId": "arn:aws:elasticloadbalancing:eu-west-3:111122223333:loadbalancer/app/demo-public/0demo", "name": "Demo public load balancer", "category": "NETWORK", "providerService": "Elastic Load Balancing", "region": "eu-west-3", "status": "ACTIVE" },
+        { "externalResourceId": "arn:aws:eks:eu-west-3:111122223333:cluster/demo-platform", "name": "Demo platform cluster", "category": "CONTAINER", "providerService": "EKS", "region": "eu-west-3", "status": "ACTIVE" },
+        { "externalResourceId": "arn:aws:lambda:eu-west-3:111122223333:function:demo-invoice-export", "name": "Demo invoice export function", "category": "SERVERLESS", "providerService": "Lambda", "region": "eu-west-3", "status": "UNKNOWN" }
+      ]
+    },
+    {
+      "name": "Demo Azure staging",
+      "provider": "AZURE",
+      "externalAccountId": "00000000-0000-4000-8000-000000000001",
+      "environment": "STAGING",
+      "region": "westeurope",
+      "resources": [
+        { "externalResourceId": "/subscriptions/00000000-0000-4000-8000-000000000001/resourceGroups/demo-rg/providers/Microsoft.Compute/virtualMachines/demo-api-vm", "name": "Demo API virtual machine", "category": "COMPUTE", "providerService": "Virtual Machines", "region": "westeurope", "status": "ACTIVE" },
+        { "externalResourceId": "/subscriptions/00000000-0000-4000-8000-000000000001/resourceGroups/demo-rg/providers/Microsoft.Storage/storageAccounts/stratospenddemo", "name": "Demo storage account", "category": "STORAGE", "providerService": "Blob Storage", "region": "westeurope", "status": "ACTIVE" },
+        { "externalResourceId": "/subscriptions/00000000-0000-4000-8000-000000000001/resourceGroups/demo-rg/providers/Microsoft.Sql/servers/demo-sql/databases/catalog", "name": "Demo catalog database", "category": "DATABASE", "providerService": "Azure SQL Database", "region": "westeurope", "status": "ACTIVE" },
+        { "externalResourceId": "/subscriptions/00000000-0000-4000-8000-000000000001/resourceGroups/demo-rg/providers/Microsoft.Network/virtualNetworks/demo-vnet", "name": "Demo virtual network", "category": "NETWORK", "providerService": "Virtual Network", "region": "westeurope", "status": "ACTIVE" },
+        { "externalResourceId": "/subscriptions/00000000-0000-4000-8000-000000000001/resourceGroups/demo-rg/providers/Microsoft.ContainerService/managedClusters/demo-aks", "name": "Demo AKS cluster", "category": "CONTAINER", "providerService": "AKS", "region": "northeurope", "status": "INACTIVE" },
+        { "externalResourceId": "/subscriptions/00000000-0000-4000-8000-000000000001/resourceGroups/demo-rg/providers/Microsoft.Web/sites/demo-notifications", "name": "Demo notifications function app", "category": "SERVERLESS", "providerService": "Azure Functions", "region": "westeurope", "status": "ACTIVE" },
+        { "externalResourceId": "/subscriptions/00000000-0000-4000-8000-000000000001/resourceGroups/demo-rg/providers/Microsoft.KeyVault/vaults/demo-kv", "name": "Demo key vault", "category": "OTHER", "providerService": "Key Vault", "region": "westeurope", "status": "UNKNOWN" }
+      ]
+    },
+    {
+      "name": "Demo GCP development",
+      "provider": "GCP",
+      "externalAccountId": "stratospend-demo-dev",
+      "environment": "DEVELOPMENT",
+      "region": "europe-west1",
+      "resources": [
+        { "externalResourceId": "//compute.googleapis.com/projects/stratospend-demo-dev/zones/europe-west1-b/instances/demo-dev-vm", "name": "Demo development VM", "category": "COMPUTE", "providerService": "Compute Engine", "region": "europe-west1", "status": "ACTIVE" },
+        { "externalResourceId": "//storage.googleapis.com/projects/_/buckets/stratospend-demo-dev-data", "name": "Demo data bucket", "category": "STORAGE", "providerService": "Cloud Storage", "region": "global", "status": "ACTIVE" },
+        { "externalResourceId": "//cloudsql.googleapis.com/projects/stratospend-demo-dev/instances/demo-dev-db", "name": "Demo development database", "category": "DATABASE", "providerService": "Cloud SQL", "region": "europe-west1", "status": "INACTIVE" },
+        { "externalResourceId": "//compute.googleapis.com/projects/stratospend-demo-dev/global/networks/demo-dev-vpc", "name": "Demo development VPC", "category": "NETWORK", "providerService": "VPC", "region": "global", "status": "ACTIVE" },
+        { "externalResourceId": "//container.googleapis.com/projects/stratospend-demo-dev/locations/europe-west1/clusters/demo-dev-gke", "name": "Demo GKE cluster", "category": "CONTAINER", "providerService": "GKE", "region": "europe-west1", "status": "ACTIVE" },
+        { "externalResourceId": "//run.googleapis.com/projects/stratospend-demo-dev/locations/europe-west1/services/demo-preview", "name": "Demo preview service", "category": "SERVERLESS", "providerService": "Cloud Run", "region": "europe-west1", "status": "ACTIVE" },
+        { "externalResourceId": "//pubsub.googleapis.com/projects/stratospend-demo-dev/topics/demo-events", "name": "Demo events topic", "category": "OTHER", "providerService": "Pub/Sub", "region": "global", "status": "UNKNOWN" }
+      ]
+    }
+  ]
+}
